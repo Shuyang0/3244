@@ -2,8 +2,8 @@
 #https://scikit-learn.org/stable/modules/svm.html
 #https://intellipaat.com/blog/tutorial/machine-learning-tutorial/svm-algorithm-in-python/#How-Does-Support-Vector-Machine-Work
 
-algo = input('algorithm to use (SVM/ kNN/NB): ')
-label = input('y label (win-loss: WL/ win-draw-loss: WDL/ goal-diff: GD): ')
+algo = input('algorithm to use {svm(support vector machine)/ knn(k-nearest neighbors)/ nb(naive bayes)}: ')
+label = input('y label {wl(win-loss)/ wdl(win-draw-loss)/ gd(goal-diff)}: ')
 print('Please wait...\n')
 
 ### X labels: 2 x 11 player ratings ###
