@@ -1,6 +1,7 @@
 from sklearn.svm import SVC
 from sklearn import neighbors
 from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
 
 def getLabel(label, matches):
     if label == 'wl':
@@ -31,3 +32,5 @@ def getAlgo(algo):
         return neighbors.KNeighborsClassifier(), 'k-Nearest Neighbors'
     elif algo == "nb":
         return GaussianNB(), 'Naive-Bayes'
+    elif algo == 'decision tree':
+    	return DecisionTreeClassifier(), 'Decision Tree'
