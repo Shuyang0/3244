@@ -2,6 +2,10 @@ from sklearn.svm import SVC
 from sklearn import neighbors
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+
+algos_available = '{svm(support vector machine)/ knn(k-nearest neighbors)/ nb(naive bayes)/ dt(decision tree)/ rf(random forest)}'
+labels_available = '{wl(win-loss)/ wdl(win-draw-loss)/ gd(goal-diff)}'
 
 def getLabel(label, matches):
     if label == 'wl':
@@ -32,5 +36,7 @@ def getAlgo(algo):
         return neighbors.KNeighborsClassifier(), 'k-Nearest Neighbors'
     elif algo == "nb":
         return GaussianNB(), 'Naive-Bayes'
-    elif algo == 'decision tree':
+    elif algo == 'dt':
     	return DecisionTreeClassifier(), 'Decision Tree'
+    elif algo == 'rf':
+        return RandomForestClassifier(), 'Random Forest'
