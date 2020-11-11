@@ -6,8 +6,21 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import Perceptron
 
-algos_available = '{svm(support vector machine)/ knn(k-nearest neighbors)/ nb(naive bayes)/ dt(decision tree)/ rf(random forest)/ lr(logistic regression)}'
-labels_available = '{wl(win-loss)/ wdl(win-draw-loss)/ gd(goal-diff)}'
+algos_available = """Algorithms available:
+    svm - support vector machine
+    knn - k-nearest neighbors
+    nb - naive bayes
+    dt - decision tree
+    rf - random forest
+    lr - logistic regression
+    p - perceptron
+    all - run all algorithms
+CHOICE: """
+labels_available = """y-Labels available:
+    wl - win loss
+    wdl - win draw loss
+    gd - goal difference
+CHOICE: """
 
 def getLabel(label, matches):
     if label == 'wl':
@@ -43,6 +56,6 @@ def getAlgo(algo):
     elif algo == 'rf':
         return RandomForestClassifier(), 'Random Forest'
     elif algo == 'lr':
-        return LogisticRegression(), 'Logistic Regression'
+        return LogisticRegression(multi_class = 'ovr'), 'Logistic Regression'
     elif algo == 'p':
-        model = Perceptron(tol=1e-3, random_state=0), 'Perceptron'
+        return Perceptron(tol=1e-3, random_state=0), 'Perceptron'

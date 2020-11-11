@@ -7,16 +7,16 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import *
-from sklearn.model_selection import cross_validate
+from sklearn.model_selection import cross_validate, KFold
 from helper import *
 #from sklearn import metrics
 #disp = metrics.plot_confusion_matrix(classifier, test_features, test_labels)
 
 
-
-algo = input('algorithm to use ' + algos_available + ': ')
-label = input('y label ' + labels_available + ': ')
-print('Please wait...\n')
+algo = input(algos_available)
+print('\n')
+label = input(labels_available)
+print('\nPlease wait...\n')
 
 #suppress warnings
 import warnings
@@ -70,31 +70,43 @@ matches = matches.drop('league_id', axis = 1)
 matches = matches.drop('home_team_goal', axis = 1)
 matches = matches.drop('away_team_goal', axis = 1)
 
-#print statements
+#debugging print statements
 #print(matches)
 #with pd.option_context('display.max_rows', 20, 'display.max_columns', None):  print(matches)
 
     
 #MODEL TRAINING
 
+#None: single core CV, -1: all cores CV
+multicore = None
+
 #X-y split
 X = matches.drop('result', axis = 1)
 y = matches['result']
 
-#train-test split
+#train model with 10-fold cross validation, using on given algo
+kfold = KFold(n_splits=10, shuffle=True, random_state=420)
+algos = ('svm', 'knn', 'nb', 'dt', 'rf', 'lr', 'p')
+if algo == 'all':
+    for a in algos:
+        model, algo_name = getAlgo(a)
+        scores = cross_validate(model, X, y, cv=kfold, scoring = ['f1_weighted', 'accuracy'], n_jobs = multicore)
+        print(algo_name + ' to predict ' + label_name + ' using player ratings')
+        print('F1-weighted: ' + str(round(scores['test_f1_weighted'].mean() * 100, 2)) + '%')
+        print('Accuracy: ' + str(round(scores['test_accuracy'].mean() * 100, 2)) + '%')
+        print('\n')
+else:
+    model, algo_name = getAlgo(algo)
+    scores = cross_validate(model, X, y, cv=kfold, scoring = ['f1_weighted', 'accuracy'], n_jobs = multicore)
+    print(algo_name + ' to predict ' + label_name + ' using player ratings')
+    print('F1-weighted: ' + str(round(scores['test_f1_weighted'].mean() * 100, 2)) + '%')
+    print('Accuracy: ' + str(round(scores['test_accuracy'].mean() * 100, 2)) + '%')
+
+#train model with 80-20 train-test split, using on given algo
 #X_train, X_test, y_train,  y_test = train_test_split(X, y, test_size = 0.20)
-
-#train model using given algo: SVM/ kNN/ NB
-model, algo_name = getAlgo(algo)
-print(algo_name + ' to predict ' + label_name + ' using player ratings' + '\n')
-scores = cross_validate(model, X, y, cv=10, scoring = ['f1_weighted', 'accuracy'])
-print('F1-weighted: ' + str(scores['test_f1_weighted'].mean() * 100))
-print('Accuracy: ' + str(scores['test_accuracy'].mean() * 100))
-
-
-#predict using test data and determine performance
+#model, algo_name = getAlgo(a)
 #model.fit(X_train, y_train)
 #y_pred = model.predict(X_test)
-
+#print(algo_name + ' to predict ' + label_name + ' using player ratings' + '\n')
 #print(confusion_matrix(y_test, y_pred))
 #print(classification_report(y_test, y_pred))
