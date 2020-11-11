@@ -3,8 +3,10 @@ from sklearn import neighbors
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import Perceptron
 
-algos_available = '{svm(support vector machine)/ knn(k-nearest neighbors)/ nb(naive bayes)/ dt(decision tree)/ rf(random forest)}'
+algos_available = '{svm(support vector machine)/ knn(k-nearest neighbors)/ nb(naive bayes)/ dt(decision tree)/ rf(random forest)/ lr(logistic regression)}'
 labels_available = '{wl(win-loss)/ wdl(win-draw-loss)/ gd(goal-diff)}'
 
 def getLabel(label, matches):
@@ -40,3 +42,7 @@ def getAlgo(algo):
     	return DecisionTreeClassifier(), 'Decision Tree'
     elif algo == 'rf':
         return RandomForestClassifier(), 'Random Forest'
+    elif algo == 'lr':
+        return LogisticRegression(), 'Logistic Regression'
+    elif algo == 'p':
+        model = Perceptron(tol=1e-3, random_state=0), 'Perceptron'

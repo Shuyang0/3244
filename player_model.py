@@ -6,8 +6,13 @@
 ### X labels: 2 x 11 player ratings ###
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import *
+from sklearn.model_selection import cross_validate
 from helper import *
+#from sklearn import metrics
+#disp = metrics.plot_confusion_matrix(classifier, test_features, test_labels)
+
+
 
 algo = input('algorithm to use ' + algos_available + ': ')
 label = input('y label ' + labels_available + ': ')
@@ -77,14 +82,19 @@ X = matches.drop('result', axis = 1)
 y = matches['result']
 
 #train-test split
-X_train, X_test, y_train,  y_test = train_test_split(X, y, test_size = 0.20)
+#X_train, X_test, y_train,  y_test = train_test_split(X, y, test_size = 0.20)
 
 #train model using given algo: SVM/ kNN/ NB
 model, algo_name = getAlgo(algo)
-model.fit(X_train, y_train)
+print(algo_name + ' to predict ' + label_name + ' using player ratings' + '\n')
+scores = cross_validate(model, X, y, cv=10, scoring = ['f1_weighted', 'accuracy'])
+print('F1-weighted: ' + str(scores['test_f1_weighted'].mean() * 100))
+print('Accuracy: ' + str(scores['test_accuracy'].mean() * 100))
+
 
 #predict using test data and determine performance
-y_pred = model.predict(X_test)
-print(algo_name + ' to predict ' + label_name + ' using player ratings' + '\n')
-print(confusion_matrix(y_test, y_pred))
-print(classification_report(y_test, y_pred))
+#model.fit(X_train, y_train)
+#y_pred = model.predict(X_test)
+
+#print(confusion_matrix(y_test, y_pred))
+#print(classification_report(y_test, y_pred))
