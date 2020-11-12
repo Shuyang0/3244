@@ -86,14 +86,16 @@ y = matches['result']
 
 #train model with 10-fold cross validation, using on given algo
 kfold = KFold(n_splits=10, shuffle=True, random_state=420)
-algos = ('svm', 'knn', 'nb', 'dt', 'rf', 'lr', 'p')
+algos = ('svm', 'knn', 'nb', 'dt', 'rf', 'lr')
+#algos = ('svm', 'knn', 'nb', 'dt', 'rf', 'lr', 'd')
 if algo == 'all':
     for a in algos:
         model, algo_name = getAlgo(a)
-        scores = cross_validate(model, X, y, cv=kfold, scoring = ['f1_weighted', 'accuracy'], n_jobs = multicore)
+        scores = cross_validate(model, X, y, cv=kfold, scoring = ['f1_weighted', 'accuracy', 'roc_auc_ovo_weighted'], n_jobs = multicore)
         print(algo_name + ' to predict ' + label_name + ' using player ratings')
         print('F1-weighted: ' + str(round(scores['test_f1_weighted'].mean() * 100, 2)) + '%')
         print('Accuracy: ' + str(round(scores['test_accuracy'].mean() * 100, 2)) + '%')
+        print('AUC-ROC: ' + str(round(scores['test_roc_auc_ovo_weighted'].mean() * 100, 2)) + '%')
         print('\n')
 else:
     model, algo_name = getAlgo(algo)

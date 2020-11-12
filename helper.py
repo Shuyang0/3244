@@ -46,7 +46,7 @@ def getLabel(label, matches):
 
 def getAlgo(algo):
     if algo == "svm":
-        return SVC(kernel = 'rbf'), 'Support Vector Machine'
+        return SVC(kernel = 'rbf', probability = True), 'Support Vector Machine'
     elif algo == "knn":
         return neighbors.KNeighborsClassifier(), 'k-Nearest Neighbors'
     elif algo == "nb":
