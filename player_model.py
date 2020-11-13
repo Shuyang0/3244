@@ -16,6 +16,8 @@ from helper import *
 algo = input(algos_available)
 print('\n')
 label = input(labels_available)
+print('\n')
+scorers = input(scorers_available)
 print('\nPlease wait...\n')
 
 #suppress warnings
@@ -64,6 +66,8 @@ for i in range(1,12):
 
 matches, label_name = getLabel(label, matches)
 
+scorers = getScorers(scorers)
+
 #remove columns not used in ML model
 matches = matches.drop('id', axis = 1)
 matches = matches.drop('league_id', axis = 1)
@@ -87,22 +91,29 @@ y = matches['result']
 #train model with 10-fold cross validation, using on given algo
 kfold = KFold(n_splits=10, shuffle=True, random_state=420)
 algos = ('svm', 'knn', 'nb', 'dt', 'rf', 'lr')
-#algos = ('svm', 'knn', 'nb', 'dt', 'rf', 'lr', 'd')
+#algos = ('svm', 'knn', 'nb', 'dt', 'rf', 'lr', 'p')
 if algo == 'all':
     for a in algos:
         model, algo_name = getAlgo(a)
-        scores = cross_validate(model, X, y, cv=kfold, scoring = ['f1_weighted', 'accuracy', 'roc_auc_ovo_weighted'], n_jobs = multicore)
+        scores = cross_validate(model, X, y, cv=kfold, scoring = scorers, n_jobs = multicore)
         print(algo_name + ' to predict ' + label_name + ' using player ratings')
-        print('F1-weighted: ' + str(round(scores['test_f1_weighted'].mean() * 100, 2)) + '%')
-        print('Accuracy: ' + str(round(scores['test_accuracy'].mean() * 100, 2)) + '%')
-        print('AUC-ROC: ' + str(round(scores['test_roc_auc_ovo_weighted'].mean() * 100, 2)) + '%')
+        if 'f1_weighted' in scorers:
+            print('F1-weighted: ' + str(round(scores['test_f1_weighted'].mean(), 4)) + ' (+/-' + str(round(scores['test_f1_weighted'].std(), 4)) + ')')
+        if 'accuracy' in scorers:
+            print('Accuracy: ' + str(round(scores['test_accuracy'].mean(), 4)) + ' (+/-' + str(round(scores['test_accuracy'].std(), 4)) + ')')
+        if 'roc_auc_ovo_weighted' in scorers:
+            print('AUC-ROC: ' + str(round(scores['test_roc_auc_ovo_weighted'].mean(), 4)) + ' (+/-' + str(round(scores['test_roc_auc_ovo_weighted'].std(), 4)) + ')')
         print('\n')
 else:
     model, algo_name = getAlgo(algo)
-    scores = cross_validate(model, X, y, cv=kfold, scoring = ['f1_weighted', 'accuracy'], n_jobs = multicore)
+    scores = cross_validate(model, X, y, cv=kfold, scoring = scorers, n_jobs = multicore)
     print(algo_name + ' to predict ' + label_name + ' using player ratings')
-    print('F1-weighted: ' + str(round(scores['test_f1_weighted'].mean() * 100, 2)) + '%')
-    print('Accuracy: ' + str(round(scores['test_accuracy'].mean() * 100, 2)) + '%')
+    if 'f1_weighted' in scorers:
+        print('F1-weighted: ' + str(round(scores['test_f1_weighted'].mean(), 4)) + ' (+/-' + str(round(scores['test_f1_weighted'].std(), 4)) + ')')
+    if 'accuracy' in scorers:
+        print('Accuracy: ' + str(round(scores['test_accuracy'].mean(), 4)) + ' (+/-' + str(round(scores['test_accuracy'].std(), 4)) + ')')
+    if 'roc_auc_ovo_weighted' in scorers:
+        print('AUC-ROC: ' + str(round(scores['test_roc_auc_ovo_weighted'].mean(), 4)) + ' (+/-' + str(round(scores['test_roc_auc_ovo_weighted'].std(), 4)) + ')')
 
 #train model with 80-20 train-test split, using on given algo
 #X_train, X_test, y_train,  y_test = train_test_split(X, y, test_size = 0.20)

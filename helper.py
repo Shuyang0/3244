@@ -13,13 +13,20 @@ algos_available = """Algorithms available:
     dt - decision tree
     rf - random forest
     lr - logistic regression
-    p - perceptron
     all - run all algorithms
 CHOICE: """
 labels_available = """y-Labels available:
     wl - win loss
     wdl - win draw loss
     gd - goal difference
+CHOICE: """
+scorers_available = """Scoring metrics available:
+    1 - f1 weighted
+    2 - accuracy
+    3 - auc-roc
+    all - use all of the above
+***If goal difference is the y-label, DO NOT include auc-roc for scoring***
+***Seperate choices with a space (e.g. "2 3")***
 CHOICE: """
 
 def getLabel(label, matches):
@@ -59,3 +66,16 @@ def getAlgo(algo):
         return LogisticRegression(multi_class = 'ovr'), 'Logistic Regression'
     elif algo == 'p':
         return Perceptron(tol=1e-3, random_state=0), 'Perceptron'
+
+def getScorers(scorers):
+    if scorers == "all":
+        return ['f1_weighted', 'accuracy', 'roc_auc_ovo_weighted']
+    out = []
+    if '1' in scorers:
+        out.append('f1_weighted')
+    if '2' in scorers:
+        out.append('accuracy')
+    if '3' in scorers:
+        out.append('roc_auc_ovo_weighted')
+    return out
+    
